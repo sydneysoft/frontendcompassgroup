@@ -1,6 +1,6 @@
 # Bus Booking Frontend
 
-This is the clean customer frontend for the bus-booking project. It contains only the bus-ticket application files and branding.
+This is the clean customer frontend for the bus-booking project.
 
 It is intentionally dependency-free. Since Node/npm is already installed on the Mac, `npm run dev` starts the included Node development server without running `npm install`.
 

@@ -57,7 +57,8 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(port, host, () => {
-  console.log(`\nBus Booking Frontend`);
+  console.log(`\nBus Booking Frontend — CLEAN V2`);
+  console.log(`Serving from: ${__dirname}`);
   console.log(`Local:   http://localhost:${port}`);
   console.log(`Backend: http://127.0.0.1:8000/api/v1`);
   console.log(`\nPress Ctrl+C to stop.\n`);
