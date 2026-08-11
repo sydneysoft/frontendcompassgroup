@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Search and book bus trips across Europe." />
+  <title>Busly — Bus tickets across Europe</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app-shell">
+    <header class="site-header">
+      <div class="container header-inner">
+        <button class="brand" id="homeButton" type="button" aria-label="Go to search">
+          <span class="brand-mark" aria-hidden="true">B</span>
+          <span class="brand-word" data-brand>Busly</span>
+        </button>
+        <nav class="header-actions" aria-label="Primary navigation">
+          <button class="nav-link" id="searchNav" type="button">Search trips</button>
+          <button class="nav-link" id="manageNav" type="button">Manage booking</button>
+          <span class="support-pill">24/7 support</span>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section id="searchView" class="view active">
+        <section class="hero">
+          <div class="hero-orb hero-orb-a"></div>
+          <div class="hero-orb hero-orb-b"></div>
+          <div class="container hero-content">
+            <p class="eyebrow">GROUND TRANSPORT, SIMPLIFIED</p>
+            <h1>Find your next bus trip.</h1>
+            <p class="hero-copy">Compare departures, choose your trip and complete the booking in one place.</p>
+
+            <form id="searchForm" class="search-card" autocomplete="off">
+              <div class="location-group">
+                <label class="field location-field">
+                  <span>From</span>
+                  <input id="originInput" name="origin" type="text" placeholder="Warsaw" minlength="2" required />
+                  <div id="originSuggestions" class="suggestions" hidden></div>
+                </label>
+                <button id="swapButton" class="swap-button" type="button" aria-label="Swap origin and destination">⇄</button>
+                <label class="field location-field">
+                  <span>To</span>
+                  <input id="destinationInput" name="destination" type="text" placeholder="Kyiv" minlength="2" required />
+                  <div id="destinationSuggestions" class="suggestions" hidden></div>
+                </label>
+              </div>
+
+              <label class="field">
+                <span>Departure</span>
+                <input id="departureInput" name="departure_date" type="date" required />
+              </label>
+
+              <label class="field">
+                <span>Adults</span>
+                <select id="adultsInput" name="adults">
+                  <option value="1">1 adult</option>
+                  <option value="2">2 adults</option>
+                  <option value="3">3 adults</option>
+                  <option value="4">4 adults</option>
+                  <option value="5">5 adults</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Children</span>
+                <select id="childrenInput" name="children">
+                  <option value="0">0 children</option>
+                  <option value="1">1 child</option>
+                  <option value="2">2 children</option>
+                  <option value="3">3 children</option>
+                </select>
+              </label>
+
+              <label class="field compact-field">
+                <span>Currency</span>
+                <select id="currencyInput" name="currency">
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                  <option value="USD">USD</option>
+                  <option value="PLN">PLN</option>
+                  <option value="UAH">UAH</option>
+                </select>
+              </label>
+
+              <button class="primary-button search-button" type="submit">
+                <span>Search trips</span>
+                <span aria-hidden="true">→</span>
+              </button>
+            </form>
+
+            <div class="quick-routes" aria-label="Popular routes">
+              <button type="button" data-route-from="Warsaw" data-route-to="Kyiv">Warsaw → Kyiv</button>
+              <button type="button" data-route-from="Lviv" data-route-to="Kraków">Lviv → Kraków</button>
+              <button type="button" data-route-from="Prague" data-route-to="Berlin">Prague → Berlin</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="resultsSection" class="container results-section" hidden>
+          <div class="results-heading">
+            <div>
+              <p class="eyebrow dark">AVAILABLE JOURNEYS</p>
+              <h2 id="resultsTitle">Trips</h2>
+              <p id="resultsMeta" class="muted"></p>
+            </div>
+            <button id="editSearchButton" class="secondary-button" type="button">Edit search</button>
+          </div>
+
+          <div class="date-strip" id="dateStrip"></div>
+
+          <div class="results-layout">
+            <aside class="filter-panel">
+              <h3>Filter & sort</h3>
+              <label class="filter-field">
+                <span>Sort by</span>
+                <select id="sortSelect">
+                  <option value="recommended">Recommended</option>
+                  <option value="price">Cheapest</option>
+                  <option value="departure">Earliest departure</option>
+                  <option value="duration">Shortest journey</option>
+                </select>
+              </label>
+              <label class="checkbox-row">
+                <input id="directOnly" type="checkbox" />
+                <span>Direct trips only</span>
+              </label>
+              <label class="checkbox-row">
+                <input id="refundableOnly" type="checkbox" />
+                <span>Refundable only</span>
+              </label>
+              <button id="clearFiltersButton" class="text-button" type="button">Clear filters</button>
+            </aside>
+
+            <div class="results-column">
+              <div id="resultsLoading" class="loading-panel" hidden>
+                <div class="spinner"></div>
+                <strong>Searching departures…</strong>
+                <span>Checking operators, prices and availability.</span>
+              </div>
+              <div id="resultsError" class="alert error" hidden></div>
+              <div id="journeyList" class="journey-list"></div>
+              <div id="noResults" class="empty-state" hidden>
+                <div class="empty-icon">🚌</div>
+                <h3>No trips match these filters</h3>
+                <p>Try another date or remove some filters.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="featuresSection" class="container feature-grid">
+          <article>
+            <span class="feature-icon">⌕</span>
+            <h3>Compare departures</h3>
+            <p>Search one route and compare operators, journey times and prices.</p>
+          </article>
+          <article>
+            <span class="feature-icon">✓</span>
+            <h3>Live availability</h3>
+            <p>Prices are checked again before checkout so the booking stays accurate.</p>
+          </article>
+          <article>
+            <span class="feature-icon">▣</span>
+            <h3>Flexible checkout</h3>
+            <p>Visa, Mastercard, Apple Pay, Google Pay and PayPal are built into the payment flow.</p>
+          </article>
+        </section>
+      </section>
+
+      <section id="checkoutView" class="view">
+        <div class="container checkout-container">
+          <button id="backToResults" class="back-link" type="button">← Back to results</button>
+          <div class="checkout-grid">
+            <div>
+              <div class="step-header">
+                <span>1</span>
+                <div>
+                  <p class="eyebrow dark">CHECKOUT</p>
+                  <h1>Passenger details</h1>
+                </div>
+              </div>
+
+              <div id="checkoutAlert" class="alert error" hidden></div>
+              <form id="bookingForm" class="panel form-panel">
+                <div id="passengerForms"></div>
+                <div class="form-divider"></div>
+                <h3>Booking contact</h3>
+                <div class="two-columns">
+                  <label class="field">
+                    <span>Email</span>
+                    <input id="contactEmail" type="email" placeholder="you@example.com" required />
+                  </label>
+                  <label class="field">
+                    <span>Phone</span>
+                    <input id="contactPhone" type="tel" placeholder="+44 7700 900000" required minlength="6" />
+                  </label>
+                </div>
+                <button id="continuePaymentButton" class="primary-button wide-button" type="submit">Continue to payment →</button>
+              </form>
+            </div>
+
+            <aside class="panel booking-summary">
+              <p class="eyebrow dark">YOUR TRIP</p>
+              <div id="checkoutJourneySummary"></div>
+              <div class="summary-total">
+                <span>Total</span>
+                <strong id="checkoutTotal">—</strong>
+              </div>
+              <p class="tiny-note">The backend reconfirms availability and price before creating this booking.</p>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section id="paymentView" class="view">
+        <div class="container narrow-container">
+          <button id="backToPassenger" class="back-link" type="button">← Passenger details</button>
+          <div class="step-header">
+            <span>2</span>
+            <div>
+              <p class="eyebrow dark">PAYMENT</p>
+              <h1>Choose how to pay</h1>
+            </div>
+          </div>
+          <div class="sandbox-banner">
+            <strong>Development sandbox</strong>
+            <span>No real money will be charged. The backend simulates successful payment.</span>
+          </div>
+          <div id="paymentError" class="alert error" hidden></div>
+          <div class="panel payment-panel">
+            <div id="paymentMethods" class="payment-methods"></div>
+            <button id="payButton" class="primary-button wide-button" type="button" disabled>Pay securely</button>
+            <div class="secure-line">🔒 Payment details are handled by the payment provider in production.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="confirmationView" class="view">
+        <div class="container narrow-container confirmation-container">
+          <div class="confirmation-check">✓</div>
+          <p class="eyebrow dark">BOOKING CONFIRMED</p>
+          <h1>Your trip is booked.</h1>
+          <p class="muted">The sandbox payment was completed and the backend generated your test ticket.</p>
+          <div id="confirmationCard" class="panel confirmation-card"></div>
+          <div class="confirmation-actions">
+            <button id="newSearchButton" class="primary-button" type="button">Book another trip</button>
+            <button id="manageThisBooking" class="secondary-button" type="button">Manage booking</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="manageView" class="view">
+        <div class="container narrow-container manage-container">
+          <p class="eyebrow dark">MY BOOKING</p>
+          <h1>Find your booking</h1>
+          <p class="muted">Enter the reference and the same email used during checkout.</p>
+          <form id="manageForm" class="panel form-panel manage-form">
+            <label class="field">
+              <span>Booking reference</span>
+              <input id="manageReference" type="text" placeholder="BT1234567890" required />
+            </label>
+            <label class="field">
+              <span>Email</span>
+              <input id="manageEmail" type="email" placeholder="you@example.com" required />
+            </label>
+            <button class="primary-button wide-button" type="submit">Find booking</button>
+          </form>
+          <div id="manageError" class="alert error" hidden></div>
+          <div id="managedBookingCard" class="panel managed-booking" hidden></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>
+          <strong data-brand>Busly</strong>
+          <p>Bus booking frontend connected to your FastAPI backend.</p>
+        </div>
+        <span>Development build · API-driven trips</span>
+      </div>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="./config.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
