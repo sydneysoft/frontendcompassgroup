@@ -6,7 +6,8 @@
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "styles.css", "use": "@vercel/static" },
     { "src": "config.js", "use": "@vercel/static" },
-    { "src": "app.js", "use": "@vercel/static" }
+    { "src": "app.js", "use": "@vercel/static" },
+    { "src": "orangesoft-logo.svg", "use": "@vercel/static" }
   ],
   "routes": [
     { "handle": "filesystem" },
