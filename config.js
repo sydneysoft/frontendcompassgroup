@@ -7,3 +7,8 @@ const orangegroupTheme = document.createElement('link');
 orangegroupTheme.rel = 'stylesheet';
 orangegroupTheme.href = './compass-theme.css';
 document.head.appendChild(orangegroupTheme);
+
+const busBannerTheme = document.createElement('link');
+busBannerTheme.rel = 'stylesheet';
+busBannerTheme.href = './bus-banner.css';
+document.head.appendChild(busBannerTheme);
