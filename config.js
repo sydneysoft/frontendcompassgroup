@@ -1,4 +1,4 @@
 window.BUS_APP_CONFIG = {
-  API_BASE_URL: 'http://127.0.0.1:8000/api/v1',
+  API_BASE_URL: 'https://backendcompassgroup.vercel.app/api/v1',
   BRAND_NAME: 'Busly'
 };
